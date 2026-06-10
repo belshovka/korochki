@@ -1,0 +1,14 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+<h1>{{ heading }}</h1>
+<form action="/register" method="post">
+    <input type="text" name="name" placeholder="Логин">
+    <input type="password" name="password" placeholder="Пароль">
+    <input type="number" name="age" placeholder="Возраст">
+    <input type="submit" value="Зарегистрироваться">
+</form>
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+{% endblock %}

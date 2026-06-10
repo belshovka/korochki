@@ -1,0 +1,31 @@
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+nav div {
+    display: flex;
+    gap: 10px;
+}
+
+a {
+    margin: 10px;
+    text-decoration: none;
+    padding: 10px;
+    background-color: lightblue;
+    border-radius: 15px;
+    color: white;
+}
+
+form {
+    margin: 0 auto;
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+form > * {
+    border-radius: 20px;
+    padding: 10px;
+}

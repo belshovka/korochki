@@ -1,0 +1,13 @@
+{% extends "_layout.html" %}
+
+{% block content %}
+<h1>{{ heading }}</h1>
+<form action="/login" method="post">
+    <input type="text" name="name" placeholder="Логин">
+    <input type="password" name="password" placeholder="Пароль">
+    <input type="submit" value="Войти">
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+</form>
+{% endblock %}
