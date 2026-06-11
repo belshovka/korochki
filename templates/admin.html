@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,21 +16,45 @@
     <main>
         <h1>Панель администратора</h1>
         {% if records %}
-            <ul>
+        <table>
+            <thead>
+                <tr>
+                    <th>Логин</th>
+                    <th>Курс</th>
+                    <th>Дата</th>
+                    <th>Оплата</th>
+                    <th>Отзыв</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
                 {% for record, user in records %}
-                <li>
-                    {{ user.login }} - {{ record.course }} - {{ record.date }} - {{ record.payment }} -
-                    <form action="/records/{{ record.id }}" method="post">
-                        <select name="status">
-                            <option value="Новая" {% if record.status == "Новая" %}selected{% endif %}>Новая</option>
-                            <option value="Идет обучение" {% if record.status == "Идет обучение" %}selected{% endif %}>Идет обучение</option>
-                            <option value="Обучение завершено" {% if record.status == "Обучение завершено" %}selected{% endif %}>Обучение завершено</option>
-                        </select>
-                        <input type="submit" value="Сохранить">
-                    </form>
-                </li>
+                <tr>
+                    <td>{{ user.login }}</td>
+                    <td>{{ record.course }}</td>
+                    <td>{{ record.date }}</td>
+                    <td>{{ record.payment }}</td>
+                    <td>
+                        {% if record.review %}
+                            {{ record.review }}
+                        {% else %}
+                            Сначала нужно пройти обучение
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form action="/records/{{ record.id }}" method="post">
+                            <select name="status">
+                                <option value="Новая"{% if record.status == "Новая" %}selected{% endif %}>Новая</option>
+                                <option value="Идет обучение" {% if record.status == "Идет обучение" %}selected{% endif %}>Идет обучение</option>
+                                <option value="Обучение завершено" {% if record.status == "Обучение завершено" %}selected{% endif %}>Обучение завершено</option>
+                            </select>
+                            <input type="submit" value="Сохранить">
+                        </form>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
+            </tbody>
+        </table>
         {% else %}
             <p>Заявок нет</p>
         {% endif %}

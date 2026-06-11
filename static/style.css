@@ -19,13 +19,43 @@ a {
 
 form {
     margin: 0 auto;
-    width: 500px;
+    max-width: 500px;
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-form > * {
+form>* {
     border-radius: 20px;
     padding: 10px;
+}
+
+/* таблицы */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead tr {
+    background-color: lightblue;
+    color: white;
+    text-align: left;
+}
+
+th,
+td {
+    padding: 12px 15px;
+}
+
+tbody tr {
+    border-bottom: 1px solid lightgray;
+}
+
+tbody tr:nth-of-type(even) {
+    background-color: lightcyan;
+}
+
+tbody tr:last-of-type {
+    border-bottom: 2px solid lightblue;
 }

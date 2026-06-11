@@ -2,6 +2,7 @@ from fastapi import FastAPI, Form, Request
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy.exc import IntegrityError
 from typing import Annotated
 from sqlmodel import Field, SQLModel, create_engine, Session, select
 
@@ -105,10 +106,22 @@ def register_page(request: Request):
     )
 
 @app.post("/register")
-def add_user(user: Annotated[NewUser, Form()]):
+def add_user(request: Request, user: Annotated[NewUser, Form()]):
     with Session(bind=engine) as session:
-        session.add(user)
-        session.commit()
+        try:
+            session.add(user)
+            session.commit()
+        except IntegrityError:
+            session.rollback()
+            return templates.TemplateResponse(
+                request=request,
+                name="register.html",
+                context={
+                    "heading": "Регистрация",
+                    "error": "Этот логин уже занят"
+                }
+            )
+
     return RedirectResponse("/login", status_code=302)
 
 @app.get("/logout")
@@ -175,7 +188,10 @@ def admin_page(request: Request):
         return RedirectResponse("/", status_code=302)
 
     with Session(bind=engine) as session:
-        all_records = session.exec(select(Record, NewUser).where(Record.user_id == NewUser.id).order_by(Record.id)).all()
+        all_records = session.exec(
+            select(Record, NewUser)
+            .where(Record.user_id == NewUser.id)
+            .order_by(Record.id)).all()
         
     return templates.TemplateResponse(
         request=request,
@@ -199,4 +215,4 @@ def edit_record(request: Request, id: int, status: Annotated[str, Form()]):
         session.add(found_record)
         session.commit()
 
-    return RedirectResponse("/", status_code=302)
+    return RedirectResponse("/admin", status_code=302)
