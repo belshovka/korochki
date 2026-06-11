@@ -5,7 +5,7 @@
 {% if records %}
     <ul>
         {% for record in records %}
-        <li>{{ record.course }} - {{ record.date }} - {{ record.payment }}</li>
+        <li>{{ record.course }} - {{ record.date }} - {{ record.payment }} - {{ record.status }}</li>
         {% endfor %}
     </ul>
 {% else %}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav>
+        <div></div>
+        <div>
+            <a href="/logout">Выйти</a>
+        </div>
+    </nav>
+    <main>
+        <h1>Панель администратора</h1>
+        {% if records %}
+            <ul>
+                {% for record, user in records %}
+                <li>
+                    {{ user.login }} - {{ record.course }} - {{ record.date }} - {{ record.payment }} -
+                    <form action="/records/{{ record.id }}" method="post">
+                        <select name="status">
+                            <option value="Новая" {% if record.status == "Новая" %}selected{% endif %}>Новая</option>
+                            <option value="Идет обучение" {% if record.status == "Идет обучение" %}selected{% endif %}>Идет обучение</option>
+                            <option value="Обучение завершено" {% if record.status == "Обучение завершено" %}selected{% endif %}>Обучение завершено</option>
+                        </select>
+                        <input type="submit" value="Сохранить">
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Заявок нет</p>
+        {% endif %}
+    </main>
+</body>
+</html>

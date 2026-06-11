@@ -9,10 +9,13 @@
 <body>
     <nav>
         <div>
+            <a href="/">Главная</a>
+            {% if request.cookies.get("login") %}
             <a href="/create">Создать заявку</a>
-            <a href="/records">Все заявки</a>
+            <a href="/records">Мои заявки</a>
+            {% endif %}
         </div>
-        {% if request.cookies.get("name") %}
+        {% if request.cookies.get("login") %}
         <div>
             <a href="/logout">Выйти</a>
         </div>

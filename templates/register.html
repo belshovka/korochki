@@ -3,9 +3,11 @@
 {% block content %}
 <h1>{{ heading }}</h1>
 <form action="/register" method="post">
-    <input type="text" name="name" placeholder="Логин">
+    <input type="text" name="login" placeholder="Логин">
     <input type="password" name="password" placeholder="Пароль">
-    <input type="number" name="age" placeholder="Возраст">
+    <input type="text" name="full_name" placeholder="Ф.И.О.">
+    <input type="text" name="phone" placeholder="8(XXX)XXX-XX-XX">
+    <input type="email" name="email" placeholder="janedoe@example.com">
     <input type="submit" value="Зарегистрироваться">
 </form>
 {% if error %}
