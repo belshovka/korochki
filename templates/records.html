@@ -9,8 +9,8 @@
             <th>Курс</th>
             <th>Дата</th>
             <th>Оплата</th>
-            <th>Отзыв</th>
             <th>Статус</th>
+            <th>Отзыв</th>
         </tr>
     </thead>
     <tbody>
@@ -19,14 +19,21 @@
             <td>{{ record.course }}</td>
             <td>{{ record.date }}</td>
             <td>{{ record.payment }}</td>
+            <td>{{ record.status }}</td>
             <td>
-                {% if record.review %}
-                    {{ record.review }}
+                {% if record.status == "Обучение завершено" %}
+                    {% if record.review %}
+                        {{ record.review }}
+                    {% else %}
+                        <form action="/records/{{ record.id }}" method="post">
+                            <textarea name="review"></textarea>
+                            <input type="submit" value="Отправить">
+                        </form>
+                    {% endif %}
                 {% else %}
-                    Сначала нужно пройти обучение
+                    Отзыв будет доступен после завершения курса
                 {% endif %}
             </td>
-            <td>{{ record.status }}</td>
         </tr>
         {% endfor %}
     </tbody>

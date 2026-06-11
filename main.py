@@ -39,9 +39,13 @@ DATABASE_URL = "postgresql://postgres:1234@localhost:5432/korochki-belshov"
 engine = create_engine(DATABASE_URL)
 SQLModel.metadata.create_all(bind=engine)
 
+def is_admin(request: Request):
+    # XXX: we hardcode the admin account by username
+    return request.cookies.get("login") == "admin"
+
 @app.get("/")
 def root_page(request: Request):
-    if request.cookies.get("login") == "admin":
+    if is_admin(request):
         return RedirectResponse("/admin", status_code=302)
 
     return templates.TemplateResponse(
@@ -51,7 +55,7 @@ def root_page(request: Request):
 
 @app.get("/login")
 def login_page(request: Request):
-    if request.cookies.get("login") == "admin":
+    if is_admin(request):
         return RedirectResponse("/admin", status_code=302)
 
     if request.cookies.get("login"):
@@ -71,6 +75,7 @@ def get_user(request: Request, user: Annotated[AuthUser, Form()]):
         found_user = session.exec(
             select(NewUser)
             .where(NewUser.login == user.login)
+            # XXX: we don't hash passwords
             .where(NewUser.password == user.password)
         ).one_or_none()
     
@@ -91,7 +96,7 @@ def get_user(request: Request, user: Annotated[AuthUser, Form()]):
 
 @app.get("/register")
 def register_page(request: Request):
-    if request.cookies.get("login") == "admin":
+    if is_admin(request):
         return RedirectResponse("/admin", status_code=302)
 
     if request.cookies.get("login"):
@@ -133,7 +138,7 @@ def logout():
 
 @app.get("/create")
 def create_record_page(request: Request):
-    if request.cookies.get("login") == "admin":
+    if is_admin(request):
         return RedirectResponse("/admin", status_code=302)
 
     if not request.cookies.get("login"):
@@ -161,7 +166,7 @@ def add_record(request: Request, record: Annotated[NewRecord, Form()]):
 
 @app.get("/records")
 def records_page(request: Request):
-    if request.cookies.get("login") == "admin":
+    if is_admin(request):
         return RedirectResponse("/admin", status_code=302)
 
     user_id = request.cookies.get("user_id")
@@ -202,17 +207,21 @@ def admin_page(request: Request):
     )
 
 @app.post("/records/{id}")
-def edit_record(request: Request, id: int, status: Annotated[str, Form()]):
-    if request.cookies.get("login") != "admin":
-        return RedirectResponse("/", status_code=302)
-
+def edit_record(id: int, status: Annotated[str, Form()] = "", review: Annotated[str, Form()] = ""):
     with Session(bind=engine) as session:
-        found_record = session.exec(
+        record = session.exec(
             select(Record)
             .where(Record.id == id)
         ).one()
-        found_record.status = status
-        session.add(found_record)
+        
+        if status:
+            record.status = status
+        else:
+            record.review = review
+
+        session.add(record)
         session.commit()
 
-    return RedirectResponse("/admin", status_code=302)
+    # XXX: /records will redirect back to /admin if the user is an admin
+    # this has correct behavior but will cause an additional redirect
+    return RedirectResponse("/records", status_code=302)
