@@ -189,7 +189,7 @@ def records_page(request: Request):
 
 @app.get("/admin")
 def admin_page(request: Request):
-    if request.cookies.get("login") != "admin":
+    if not is_admin(request):
         return RedirectResponse("/", status_code=302)
 
     with Session(bind=engine) as session:

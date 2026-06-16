@@ -3,41 +3,43 @@
 {% block content %}
 <h1>Мои заявки</h1>
 {% if records %}
-<table>
-    <thead>
-        <tr>
-            <th>Курс</th>
-            <th>Дата</th>
-            <th>Оплата</th>
-            <th>Статус</th>
-            <th>Отзыв</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for record in records %}
-        <tr>
-            <td>{{ record.course }}</td>
-            <td>{{ record.date }}</td>
-            <td>{{ record.payment }}</td>
-            <td>{{ record.status }}</td>
-            <td>
-                {% if record.status == "Обучение завершено" %}
-                    {% if record.review %}
-                        {{ record.review }}
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Курс</th>
+                <th>Дата</th>
+                <th>Оплата</th>
+                <th>Статус</th>
+                <th>Отзыв</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.course }}</td>
+                <td>{{ record.date }}</td>
+                <td>{{ record.payment }}</td>
+                <td>{{ record.status }}</td>
+                <td>
+                    {% if record.status == "Обучение завершено" %}
+                        {% if record.review %}
+                            {{ record.review }}
+                        {% else %}
+                            <form action="/records/{{ record.id }}" method="post">
+                                <textarea name="review" placeholder="Оставьте отзыв"></textarea>
+                                <input type="submit" value="Отправить">
+                            </form>
+                        {% endif %}
                     {% else %}
-                        <form action="/records/{{ record.id }}" method="post">
-                            <textarea name="review"></textarea>
-                            <input type="submit" value="Отправить">
-                        </form>
+                        Отзыв будет доступен после завершения курса
                     {% endif %}
-                {% else %}
-                    Отзыв будет доступен после завершения курса
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% else %}
     <p>Заявок нет</p>
 {% endif %}
